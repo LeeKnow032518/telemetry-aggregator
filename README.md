@@ -20,10 +20,10 @@
 - aggregated_service_stats
 
 # Архитектура (C4-модели)
-- [Context](images/Context.png)
-- [Container](images/Container.png)
-- [Component](images/Component.png)
-- [Sequence](images/Sequence.png)
+- [Context](Context.png)
+- [Container](Container.png)
+- [Component](Component.png)
+- [Sequence](Sequence.png)
 
 ## Запуск и остановка
 
