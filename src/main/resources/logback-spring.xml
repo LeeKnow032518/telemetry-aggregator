@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="LOKI_URL" source="LOKI_URL" defaultValue="http://localhost:3100/loki/api/v1/push"/>
+    <springProperty name="APP_NAME" source="spring.application.name" defaultValue="unnamed-app"/>
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>${LOKI_URL}</url>
+            <connectionTimeout>5000</connectionTimeout>
+            <requestTimeout>5000</requestTimeout>
+        </http>
+        <batch>
+            <maxSize>1000</maxSize>
+            <maxBytes>20MB</maxBytes>
+        </batch>
+        <format>
+            <label>
+                <pattern>app=${APP_NAME},host=${HOSTNAME:-localhost},level=%level</pattern>
+                <readMarkers>true</readMarkers>
+            </label>
+            <message>
+                <pattern>
+                    {
+                    "level":"%level",
+                    "class":"%logger{36}",
+                    "thread":"%thread",
+                    "message": "%message{\"}"
+                    "requestId":"%mdc{X-Request-ID:-none}"
+                    }
+                </pattern>
+            </message>
+        </format>
+    </appender>
+
+    <appender name="ASYNC_LOKI" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOKI"/>
+        <queueSize>1024</queueSize>
+    </appender>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ASYNC_LOKI"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

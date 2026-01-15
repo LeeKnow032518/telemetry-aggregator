@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: telemetryaggregator
+  sql:
+    init:
+      mode: always
